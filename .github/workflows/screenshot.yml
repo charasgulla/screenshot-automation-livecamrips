@@ -24,7 +24,7 @@ jobs:
         python3 screenshotter.py list --file urls.txt --output screenshots --delay 1
 
     - name: Upload screenshots
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: screenshots
         path: screenshots
