@@ -1,44 +1,33 @@
 name: Screenshot Automation
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch: # Allows manual runs from the Actions tab
 
 jobs:
   screenshot:
-    runs-on: ubuntu-latest  # Runs on free GitHub servers
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-pip
-        pip3 install playwright
-        playwright install chromium
+        pip3 install playwright==1.45.0
+        playwright install --with-deps chromium
 
     - name: Run screenshot script
       run: |
-        python3 screenshotter.py list --file urls.txt --output screenshots --delay 1
-
-    - name: List files in screenshots directory (debugging)
-      run: |
-        echo "Listing files in screenshots directory..."
-        ls -la screenshots/  # Ensure files are saved to the correct directory
-
-    - name: Verify the screenshots directory is populated (debugging)
-      run: |
-        echo "Verifying screenshots folder for content..."
-        du -sh screenshots/  # Shows the total size of the directory (helps with debugging large file uploads)
+        python3 screenshotter.py list \
+          --file urls.txt \
+          --output screenshots \
+          --delay 1 \
+          --timeout 120000 \
+          --max-urls 50  # Start with 50 to avoid timeout, then increase
 
     - name: Upload screenshots
       uses: actions/upload-artifact@v4
       with:
-        name: screenshots  # Name of the artifact
-        path: screenshots/  # Path to the directory you want to upload
-        compression-level: 6  # Adjust compression level for faster uploads (1-9, 6 is default)
-        include-hidden-files: true  # Include hidden files (e.g., .gitignore)
-        overwrite: true  # Allow overwriting of existing artifacts
+        name: screenshots
+        path: screenshots
