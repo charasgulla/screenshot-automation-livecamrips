@@ -24,8 +24,15 @@ jobs:
       run: |
         python3 screenshotter.py list --file urls.txt --output screenshots --delay 1
 
+    - name: List files (for debugging)
+      run: |
+        ls -la screenshots/  # This step ensures files are being saved to the correct directory.
+
     - name: Upload screenshots
-      uses: actions/upload-artifact@v3.1  # Use the latest v3.1 version
+      uses: actions/upload-artifact@v4
       with:
-        name: screenshots
-        path: screenshots/
+        name: screenshots  # Name of the artifact
+        path: screenshots/  # Path to the directory you want to upload
+        compression-level: 6  # Adjust compression level for faster uploads (1-9, 6 is default)
+        include-hidden-files: true  # Include hidden files (e.g., .gitignore)
+        overwrite: true  # Allow overwriting of existing artifacts
