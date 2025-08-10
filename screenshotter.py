@@ -89,3 +89,23 @@ if __name__ == "__main__":
 
     args = ap.parse_args()
     asyncio.run(run(args))
+    
+    async def capture_url(browser, url, outdir, prefix="", wait=0, timeout=60000, scale="device"):
+    print(f"Capturing screenshot for: {url}")  # Debug line to check which URL is being processed
+    ctx = await browser.new_context(device_scale_factor=1 if scale=="device" else 2)
+    page = await ctx.new_page()
+    page.set_default_timeout(timeout)
+    try:
+        await page.goto(url, wait_until="networkidle")
+        if wait > 0:
+            await page.wait_for_timeout(wait*1000)
+        ts = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        name = f"{prefix}{slugify(url)}_{ts}.png"
+        path = os.path.join(outdir, name)
+        await page.screenshot(path=path, full_page=True)
+        print(f"✔ Saved: {path}")  # Debug line to confirm screenshot was saved
+    except Exception as e:
+        print(f"✖ Failed: {url} -> {e}")
+    finally:
+        await ctx.close()
+
