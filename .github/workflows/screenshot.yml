@@ -24,9 +24,15 @@ jobs:
       run: |
         python3 screenshotter.py list --file urls.txt --output screenshots --delay 1
 
-    - name: List files (for debugging)
+    - name: List files in screenshots directory (debugging)
       run: |
-        ls -la screenshots/  # This step ensures files are being saved to the correct directory.
+        echo "Listing files in screenshots directory..."
+        ls -la screenshots/  # Ensure files are saved to the correct directory
+
+    - name: Verify the screenshots directory is populated (debugging)
+      run: |
+        echo "Verifying screenshots folder for content..."
+        du -sh screenshots/  # Shows the total size of the directory (helps with debugging large file uploads)
 
     - name: Upload screenshots
       uses: actions/upload-artifact@v4
