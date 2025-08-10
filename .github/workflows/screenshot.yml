@@ -1,0 +1,30 @@
+name: Screenshot Automation
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest  # Runs on free GitHub servers
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y python3-pip
+        pip3 install playwright
+        playwright install chromium
+
+    - name: Run screenshot script
+      run: |
+        python3 screenshotter.py list --file urls.txt --output screenshots --delay 1
+
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: screenshots
