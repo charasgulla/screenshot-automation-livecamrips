@@ -17,14 +17,14 @@ jobs:
         pip3 install playwright==1.45.0
         playwright install --with-deps chromium
 
-    - name: Run screenshot script
+    - name: Run screenshot script (first 500 URLs from urls_chunk_1.txt)
       run: |
+        head -n 500 urls_chunk_1.txt > temp_urls.txt
         python3 screenshotter.py list \
-          --file urls.txt \
+          --file temp_urls.txt \
           --output screenshots \
           --delay 1 \
-          --timeout 120000 \
-          --max-urls 50  # Start with 50 to avoid timeout, then increase
+          --timeout 120000
 
     - name: Upload screenshots
       uses: actions/upload-artifact@v4
